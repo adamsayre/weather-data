@@ -3,7 +3,7 @@
 import requests
 import pandas as pd
 
-OPEN_METEO_ARCHIVE_URL = "https://api.open-meteo.com/v1/archive"
+OPEN_METEO_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 
 def fetch_weather_city_date(
     city_name: str,
