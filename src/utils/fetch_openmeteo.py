@@ -11,7 +11,7 @@ def fetch_weather_city_date(
     long: float,
     start_date_str: str,
     end_date_str: str,
-    hourly_params: list,
+    hourly_params: list[str],
 ) -> pd.DataFrame:
     """
     Fetch hourly historical weather for a city between start date and end date 
@@ -22,7 +22,7 @@ def fetch_weather_city_date(
     long: longitude of the city
     start_date_str: start date in YYYY-MM-DD format
     end_date_str: end date in YYYY-MM-DD format
-    hourly_params: list of variable names to fetch
+    hourly_params: list of strings, variable names to fetch
     """
 
     params = {
