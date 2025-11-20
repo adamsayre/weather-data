@@ -1,7 +1,7 @@
 # fetch_openmeteo.py
 
 import requests
-
+import pandas as pd
 
 OPEN_METEO_ARCHIVE_URL = "https://api.open-meteo.com/v1/archive"
 
@@ -12,7 +12,7 @@ def fetch_weather_city_date(
     start_date_str: str,
     end_date_str: str,
     hourly_params: list,
-):
+) -> pd.DataFrame:
     """
     Fetch hourly historical weather for a city between start date and end date 
 
@@ -36,4 +36,14 @@ def fetch_weather_city_date(
 
     response = requests.get(OPEN_METEO_ARCHIVE_URL, params=params, timeout=30)
     response.raise_for_status()
-    return response.json()
+    data = response.json()
+
+    df_pd = pd.DataFrame(data['hourly'])
+        
+    # Add metadata columns
+    df_pd['city'] = city_name
+    df_pd['latitude'] = lat
+    df_pd['longitude'] = long
+    df_pd['api_source'] = 'open-meteo'
+
+    return df_pd
