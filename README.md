@@ -4,17 +4,36 @@ by Adam Kleiman, created 2025-11-20
 
 ## Architecture
 
-This weather reporting and prediction data product follows the databricks "medallion" architecture:
-* Bronze: ingest raw data from source, no transformation if applicable, land data in partitions on `bronze` schema
-* Silver: use a "write, audit, publish" methodology, apply transformations or business logic, and check data for issues. If audit passes, promote the partition to `silver` schema
-* Gold: a kimball dimensional model - tables living in the `gold` schema, use a write, audit, publish to promote changes into the model
+This weather reporting and prediction data pipeline follows the databricks **medallion architecture**. It uses a **write, audit, publish pattern** and is designed to be **idempotent** and act only on a **single partition**.
 
-Finally, ML models can consume the gold layer data ensuring only clean and understood data makes it into the model.
+The **medallion architecture** denotes ascending levels of data quality and reliability:
+* Bronze: 
+    * Ingests raw data from source with no transformations. 
+    * Data typically in SCD (slowly-changing dimension) type 1 tables, partitioned by observation date
+    * Uses a Databricks/ipython notebook and databricks job scheduling to run
+* Silver
+    * Uses a "write, audit, publish" pattern (see below)
+    * Also uses Databricks/ipython notebooks with databricks job scheduling
+    * Applies business logic and check data for issues before promoting partitions into a production table
+* Gold
+    * A Kimball-style dimensional model - the fact is the hourly weather observation for a given city in this example.
+    * Uses dbt to transform, govern, and materialize the model
+    * Dashboards and ML models can consume the gold layer data ensuring only clean and conformed data makes it to stakeholders or downstream use cases.
 
-## Products
+The **write, audit, publish pattern**:
+* The transformations write new data to a “staging” location
+* Runs self-audit before promoting data to a higher environment. If the audit fails, stop the pipeline so debugging can proceed
+* If audits pass, publish the partition to the “production” location
+
+All pipelines act on a **single partition**, never the entire table.
+
+**Idempotency** means each job should produce the same partition if run at a future date. 
+
+
+## Outputs
 
 1. Dashboard reporting the gold-layer data
-2. ML forecasts of temperature for each city.
+2. (in progress) ML forecasts of temperature for each city.
 
 ## Kimball Model
 
