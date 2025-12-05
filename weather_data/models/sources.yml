@@ -1,0 +1,39 @@
+
+sources:
+  - name: silver
+    catalog: workspace            # Your Unity Catalog name
+    schema: silver    # Where the raw table lives
+    tables:
+      - name: openmeteo_hourly_historical
+        description: "Hourly weather observations ingested from OpenMeteo API"
+        columns:
+          - name: ingestion_timestamp
+            description: timestamp the ingestion job ran, in local time to query entity (see databricks TIMESTAMP type) and `yyyy-MM-ddTHH:mm:ss.sss+00:00` format
+            data_tests: 
+              - not_null
+          - name: time
+            description: string of timestamp of observed weather, in `yyyy-MM-ddTHH:mm` where T is the literal string "T"
+            data_tests: 
+              - not_null
+          - name: temperature_2m
+            description: Air temperature at 2 meters above ground (C)
+          - name: relativehumidity_2m
+            description: Air temperature at 2 meters above ground
+          - name: surface_pressure
+            description: Atmospheric air pressure reduced to mean sea level (msl) or pressure at surface. Typically pressure on mean sea level is used in meteorology. Surface pressure gets lower with increasing elevation.
+          - name: precipitation
+            description: Total precipitation (rain, showers, snow) sum of the preceding hour
+          - name: windspeed_10m
+          - name: winddirection_10m
+          - name: cloudcover
+          - name: city
+          - name: latitude
+          - name: longitude
+          - name: api_source
+          - name: ingestion_timestamp
+          - name: observation_date
+            description: date of the ingestion dag trigger (UTC) - partition key for the underlying table
+            data_tests: 
+              - not_null
+          - name: temperature_2m_f
+            description: temperature_2m field converted to farenheit
