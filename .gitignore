@@ -211,3 +211,5 @@ target/
 dbt_modules/
 logs/
 
+# venv directory
+weather-env/
