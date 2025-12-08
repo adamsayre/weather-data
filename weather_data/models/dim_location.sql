@@ -18,8 +18,7 @@ SELECT
     md5(city) as location_key, 
     city,
     latitude,
-    longitude,
-    current_timestamp() as load_date
+    longitude
 FROM source_data
 
 {% if is_incremental() %}
