@@ -2,7 +2,7 @@
     materialized='incremental',
     unique_key='weather_observation_key',
     partition_by=['observation_date'],
-    file_format='parquet'
+    file_format='delta'
 ) }}
 
 WITH raw_data AS (
@@ -17,7 +17,7 @@ final AS (
     SELECT 
         -- a unique ID for the fact row
         md5(concat(cast(r.time as string), r.city, r.api_source)) as weather_observation_key,
-        
+        r.observation_date,
         -- foreign keys
         cast(date_format(cast(r.time as TIMESTAMP), 'yyyyMMdd') as INT) as date_key,
         hour(cast(r.time as TIMESTAMP)) * 100 as time_key, 
