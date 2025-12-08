@@ -1,0 +1,36 @@
+[project]
+name = "Weather Data Pipeline"
+version = "0.0.1"
+authors = [
+  { name="Adam Kleiman", email="ats.kleiman@gmail.com" },
+]
+description = "A small package to gather and model weather data."
+readme = "README.md"
+requires-python = "==3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/adamsayre/weather-data"
+Issues = "https://github.com/adamsayre/weather-data/issues"
+
+[tool.sqlfluff.core]
+templater = dbt
+
+[tool.sqlfluff.templater.dbt]
+project_dir = weather_data
+
+[tool.sqlfluff.templater.jinja]
+apply_dbt_builtins = True
+
+[tool.sqlfluff.rules.capitalisation.keywords]
+capitalisation_policy = "upper"
+
+[tool.sqlfluff.layout.type.comma]
+line_position = leading
+
+asdfasdfasdfasdfasdfasdfasdfasdfasdfasffadsfadsfdsasdfasdfadfsdsafasdfasdfg
