@@ -1,10 +1,13 @@
 # promote_staging_to_prod.py
 
-# TODO: prints not pushed up to databricks, probably have to start a logger
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main":
     import sys
     import argparse
+    logger.info(f"Starting Partition Copy Job")
 
     parser = argparse.ArgumentParser(description="Copy a specific partition from source to target.")
     parser.add_argument("--source_table", required=True, help="Source database.table, in catalog.schema.table format")
@@ -13,17 +16,17 @@ if __name__ == "__main":
     parser.add_argument("--partition_val", required=True, help="Value of the partition column")
     args = parser.parse_args()
 
-    print(f"Starting Partition Copy Job")
-    print(f"Source: {args.source_table}")
-    print(f"Target: {args.target_table}")
-    print(f"Partition: {args.partition_col} = {args.partition_val}")
+    logger.info(f"Source: {args.source_table}")
+    logger.info(f"Target: {args.target_table}")
+    logger.info(f"Partition: {args.partition_col} = {args.partition_val}")
 
     d = spark.sql(
         f"""
-        INSERT OVERWRITE TABLE {args.destination_table}
-        PARTITION ({args.partition_col})
-        SELECT * FROM {args.source_table}
-        where partition_col = {args.partition_val})
+        INSERT OVERWRITE TABLE {args.target_table}
+        PARTITION ({args.partition_col} = {args.partition_val})
+        SELECT * except({args.partition_col})
+        FROM {args.source_table}
         """
     )
-    print("Done with job :) have a nice day")
+    logger.info(f"Output: {d}")
+    logger.info("Done with job :) have a nice day")
